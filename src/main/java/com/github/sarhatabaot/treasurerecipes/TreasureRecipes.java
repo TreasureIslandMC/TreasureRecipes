@@ -1,6 +1,7 @@
 package com.github.sarhatabaot.treasurerecipes;
 
 import com.google.gson.*;
+import jdk.nashorn.internal.runtime.regexp.joni.Config;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -55,12 +56,24 @@ public final class TreasureRecipes extends JavaPlugin {
 
 		JsonParser jsonParser = new JsonParser();
 		int recipeCount = 0;
+		int failedCount = 0;
 		for (File recipeFile : recipes.listFiles()) {
 			JsonElement element = jsonParser.parse(new FileReader(recipeFile));
-			Bukkit.addRecipe(load(element));
+			Recipe recipe;
+
+			try {
+				recipe = load(element);
+			} catch (NullPointerException e){
+				getLogger().info(String.format("Could not load %s skipping..",recipeFile.getName()));
+				failedCount++;
+				continue;
+			}
+			Bukkit.addRecipe(recipe);
 			recipeCount++;
 		}
-		getLogger().info(String.format("Loaded %s recipes in %d ms",recipeCount,System.currentTimeMillis()-startTime));
+		getLogger().info(String.format("Loaded %d/%d recipes in %d ms.",recipeCount,recipeCount+failedCount,System.currentTimeMillis()-startTime));
+		if(failedCount > 0)
+			getLogger().warning(String.format("Failed to load %d recipes", failedCount));
 	}
 
 	public Recipe load(final JsonElement json) {
