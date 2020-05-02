@@ -3,4 +3,4 @@ version: ${project.version}
 description: ${project.description}
 website: ${project.url}
 main: com.github.sarhatabaot.treasurerecipes.TreasureRecipes
-api-version: 1.13
+api-version: "1.13"

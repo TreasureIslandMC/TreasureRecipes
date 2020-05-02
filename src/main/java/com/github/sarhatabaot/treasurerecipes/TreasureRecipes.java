@@ -92,6 +92,5 @@ public final class TreasureRecipes extends JavaPlugin {
 	public static class Config{
 		private static final FileConfiguration configuration = getInstance().getConfig();
 		public static final boolean DEBUG = configuration.getBoolean("debug",false);
-
 	}
 }
